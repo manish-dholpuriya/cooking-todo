@@ -29,6 +29,15 @@
             <button class="context-btn" data-context="workout">🏋️ Workout</button>
             <button class="context-btn" data-context="lazy">🛋️ Lazy</button>
           </div>
+
+          <h2>Any diet preferences?</h2>
+          <div class="diet-buttons" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+            <button class="diet-btn active" data-diet="None">🍽️ None</button>
+            <button class="diet-btn" data-diet="Vegetarian">🥗 Veggie</button>
+            <button class="diet-btn" data-diet="Keto">🥩 Keto</button>
+            <button class="diet-btn" data-diet="Gluten-Free">🌾 GF</button>
+          </div>
+
           <button id="generatePlanBtn" class="primary-btn">Generate Meal Plan</button>
         </section>
 
@@ -37,6 +46,13 @@
           <div id="mealCards" class="meal-cards">
             <!-- Meal cards will be injected here by JS -->
             <p style="color: var(--text-muted); padding: 2rem; text-align: center;">Click "Generate Meal Plan" to see your day.</p>
+          </div>
+
+          <div id="cookingTodoList" class="cooking-todo-list" style="display: none; margin-top: 2.5rem;">
+            <h2>Cooking To-Do List</h2>
+            <div id="todoContainer" class="todo-container glass-panel">
+               <!-- To Do Items injected by JS -->
+            </div>
           </div>
         </section>
 
@@ -58,6 +74,11 @@
           </div>
         </aside>
       </main>
+    </div>
+
+    <div id="aiLoadingOverlay" class="ai-loading-overlay">
+      <div class="spinner"></div>
+      <h2>AI is generating your perfect day...</h2>
     </div>
     
     <script type="module" src="/src/main.js"></script>

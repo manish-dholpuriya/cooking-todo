@@ -361,3 +361,148 @@ h2, h3 {
 .sub-option:hover {
   background: rgba(255, 255, 255, 0.1);
 }
+
+/* Diet Buttons */
+.diet-btn {
+  flex: 1;
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-main);
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.diet-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.diet-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+/* AI Loading Overlay */
+.ai-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.ai-loading-overlay.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.ai-loading-overlay h2 {
+  margin-top: 1.5rem;
+  font-weight: 300;
+  color: var(--text-main);
+  animation: pulseText 1.5s infinite alternate;
+}
+
+@keyframes pulseText {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Cooking To-Do List */
+.todo-container {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.todo-meal-section h3 {
+  color: var(--primary);
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.todo-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.todo-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.todo-item input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--text-muted);
+  border-radius: 4px;
+  margin-top: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.todo-item input[type="checkbox"]:checked {
+  background-color: var(--accent-green);
+  border-color: var(--accent-green);
+}
+
+.todo-item input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: -3px;
+  left: 2px;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.todo-text {
+  flex: 1;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  transition: all 0.2s ease;
+}
+
+.todo-item input[type="checkbox"]:checked + .todo-text {
+  text-decoration: line-through;
+  color: var(--text-muted);
+  opacity: 0.7;
+}

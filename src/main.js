@@ -1,17 +1,22 @@
 import { mealsDatabase, substitutionsDatabase } from './data/meals.js';
 
 let currentContext = 'busy';
+let currentDiet = 'None';
 let currentPlan = [];
 let dailyBudget = 20;
 
 // DOM Elements
 const contextBtns = document.querySelectorAll('.context-btn');
+const dietBtns = document.querySelectorAll('.diet-btn');
 const generateBtn = document.getElementById('generatePlanBtn');
 const budgetInput = document.getElementById('dailyBudget');
 const mealCardsContainer = document.getElementById('mealCards');
 const groceryItemsContainer = document.getElementById('groceryItems');
 const budgetFill = document.getElementById('budgetFill');
 const budgetStatus = document.getElementById('budgetStatus');
+const aiLoadingOverlay = document.getElementById('aiLoadingOverlay');
+const cookingTodoList = document.getElementById('cookingTodoList');
+const todoContainer = document.getElementById('todoContainer');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -28,7 +33,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  generateBtn.addEventListener('click', generatePlan);
+  dietBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      dietBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentDiet = btn.dataset.diet;
+    });
+  });
+
+  generateBtn.addEventListener('click', handleGeneratePlan);
   
   // Close dropdowns when clicking outside
   document.addEventListener('click', (e) => {
@@ -40,14 +53,39 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+function handleGeneratePlan() {
+  // Show AI loading overlay
+  aiLoadingOverlay.classList.add('show');
+  
+  // Simulate AI Generation time (1.5s to 2.5s)
+  const delay = Math.random() * 1000 + 1500;
+  
+  setTimeout(() => {
+    generatePlan();
+    aiLoadingOverlay.classList.remove('show');
+  }, delay);
+}
+
 function generatePlan() {
-  const breakfastOptions = mealsDatabase.filter(m => m.type === 'Breakfast' && m.context.includes(currentContext));
-  const lunchOptions = mealsDatabase.filter(m => m.type === 'Lunch' && m.context.includes(currentContext));
-  const dinnerOptions = mealsDatabase.filter(m => m.type === 'Dinner' && m.context.includes(currentContext));
+  const filterMeals = (type) => {
+    const filtered = mealsDatabase.filter(m => 
+      m.type === type && 
+      m.context.includes(currentContext) && 
+      m.diets.includes(currentDiet)
+    );
+    // Fallback if no exact match for diet+context
+    if (filtered.length === 0) {
+      return mealsDatabase.filter(m => m.type === type && m.context.includes(currentContext));
+    }
+    return filtered;
+  };
+
+  const breakfastOptions = filterMeals('Breakfast');
+  const lunchOptions = filterMeals('Lunch');
+  const dinnerOptions = filterMeals('Dinner');
 
   const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-  // Deep copy to allow per-session substitutions without altering DB
   currentPlan = [
     JSON.parse(JSON.stringify(getRandom(breakfastOptions))),
     JSON.parse(JSON.stringify(getRandom(lunchOptions))),
@@ -55,6 +93,7 @@ function generatePlan() {
   ];
 
   renderPlan();
+  renderTodoList();
 }
 
 function renderPlan() {
@@ -148,6 +187,33 @@ function renderPlan() {
   });
 
   updateGroceryAndBudget();
+}
+
+function renderTodoList() {
+  todoContainer.innerHTML = '';
+  cookingTodoList.style.display = 'block';
+
+  currentPlan.forEach((meal, mealIndex) => {
+    if (!meal.steps || meal.steps.length === 0) return;
+    
+    const section = document.createElement('div');
+    section.className = 'todo-meal-section fade-in';
+    section.style.animationDelay = `${mealIndex * 0.15}s`;
+    
+    let stepsHtml = meal.steps.map((step, stepIndex) => `
+      <label class="todo-item">
+        <input type="checkbox">
+        <span class="todo-text">${step}</span>
+      </label>
+    `).join('');
+    
+    section.innerHTML = `
+      <h3>${meal.type}: ${meal.name}</h3>
+      ${stepsHtml}
+    `;
+    
+    todoContainer.appendChild(section);
+  });
 }
 
 function updateGroceryAndBudget() {
